@@ -23,6 +23,24 @@ const games = [
     icon: 'i-lucide-trophy',
     tags: ['sport', 'scoreboard', 'fullscreen'],
   },
+  {
+    slug: 'pendekar-monster',
+    title: 'Pendekar & Monster',
+    subtitle: 'River crossing puzzle (Missionaries and Cannibals)',
+    description:
+      'Seberangkan 3 pendekar dan 3 monster ke sisi lain sungai dengan perahu kecil. Jangan biarkan monster melebihi pendekar di sisi manapun — kalau iya, pendekar dimakan.',
+    icon: 'i-lucide-puzzle',
+    tags: ['puzzle', 'logic', 'classic'],
+  },
+  {
+    slug: 'sudoku',
+    title: 'Sudoku',
+    subtitle: 'Klasik 9×9 dengan 4 level kesulitan',
+    description:
+      'Easy, medium, hard, expert. Notes mode, undo, max 5 kesalahan, timer + best time per level. Fullscreen-friendly buat main di hape.',
+    icon: 'i-lucide-grid-3x3',
+    tags: ['puzzle', 'logic', 'numbers'],
+  },
 ]
 </script>
 
