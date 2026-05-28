@@ -23,6 +23,10 @@ useSeoMeta({
   ogDescription: post.value.description,
   ogImage: post.value.cover,
   ogType: 'article',
+  twitterCard: 'summary_large_image',
+  twitterTitle: post.value.title,
+  twitterDescription: post.value.description,
+  twitterImage: post.value.cover,
   articlePublishedTime: post.value.date,
   articleAuthor: post.value.author ? [post.value.author] : undefined,
 })

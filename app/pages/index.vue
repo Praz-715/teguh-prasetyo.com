@@ -2,7 +2,7 @@
 const owner = useOwner()
 
 useSeoMeta({
-  title: `${owner.name} — ${owner.role}`,
+  title: owner.role,
   description: owner.intro,
   ogTitle: `${owner.name} — ${owner.role}`,
   ogDescription: owner.intro,

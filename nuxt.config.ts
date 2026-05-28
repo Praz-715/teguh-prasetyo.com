@@ -28,7 +28,7 @@ export default defineNuxtConfig({
   ],
 
   site: {
-    url: 'https://teguh-prasetyo.com',
+    url: 'https://www.teguh-prasetyo.com',
     name: 'Teguh Prasetyo',
     description:
       'Database & Enterprise Solutions Consultant. Personal portfolio, projects, and writing.',
