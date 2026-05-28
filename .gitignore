@@ -1,35 +1,85 @@
-# Nuxt
+# =========================================================================
+# .gitignore — file & folder yang TIDAK boleh ke-commit / push ke remote
+# =========================================================================
+
+# ── Nuxt build artifacts (re-generated tiap build) ──────────────────────
 .nuxt
 .output
 .data
 .cache
+.nitro
 
-# Dependencies
+# ── Dependencies (di-install ulang via npm install) ─────────────────────
 node_modules
 
-# Local env
+# ── Lock files alternatif (kita pakai npm → package-lock.json di-commit)
+# Uncomment kalau project pindah ke pnpm/yarn/bun:
+# pnpm-lock.yaml
+# yarn.lock
+# bun.lockb
+
+# ── Local env & secrets (TIDAK PERNAH commit!) ──────────────────────────
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+*.pem
+*.key
+*.p12
+secrets/
+credentials.json
 
-# Logs
+# ── Deploy platform caches ──────────────────────────────────────────────
+.vercel
+.netlify
+
+# ── TypeScript incremental build info ───────────────────────────────────
+*.tsbuildinfo
+
+# ── Logs & debug ────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+.npm
+.pnpm-store
 
-# IDE
+# ── Test & coverage output ──────────────────────────────────────────────
+coverage
+*.lcov
+.nyc_output
+playwright-report
+test-results
+
+# ── IDE / editor ────────────────────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea
-.DS_Store
+.history
+*.sublime-*
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.bak
 
-# Build artifacts
+# ── OS-specific (Windows / macOS) ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Build artifacts lain ────────────────────────────────────────────────
 dist
-.nitro
+out
+
+# ── Sembarang file/folder lokal eksperimen ──────────────────────────────
+.tmp
+*.tmp
+*.temp
+.scratch/
