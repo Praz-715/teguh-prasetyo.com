@@ -189,6 +189,7 @@ export default defineNuxtConfig({
         camera: [],
         microphone: [],
         geolocation: [],
+        fullscreen: ['self'],
       },
     },
     xssValidator: false,

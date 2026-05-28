@@ -4,6 +4,7 @@ const navLinks = [
   { label: 'Experience', to: '/experience' },
   { label: 'Projects', to: '/projects' },
   { label: 'Blog', to: '/blog' },
+  { label: 'Games', to: '/games' },
   { label: 'Contact', to: '/contact' },
 ]
 
