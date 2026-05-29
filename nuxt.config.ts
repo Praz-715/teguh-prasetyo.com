@@ -18,12 +18,16 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/eslint',
     'nuxt-security',
+    '@pinia/nuxt',
   ],
 
   css: ['~/assets/css/main.css'],
 
   components: [
     { path: '~/components/content', pathPrefix: false },
+    { path: '~/components/expense-splitter', prefix: 'Split', pathPrefix: false },
+    { path: '~/components/trip-planner', prefix: 'Plan', pathPrefix: false },
+    { path: '~/components/oracle-toolkit', prefix: 'Ora', pathPrefix: false },
     '~/components',
   ],
 
