@@ -83,3 +83,6 @@ out
 *.tmp
 *.temp
 .scratch/
+
+# ── Claude Code local config (agent settings, lokal only) ───────────────
+.claude/
