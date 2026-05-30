@@ -10,7 +10,9 @@ const { data: projects } = await useAsyncData('projects-all', () =>
 
 const categories = computed(() => {
   const set = new Set<string>()
-  projects.value?.forEach((p) => set.add(p.category))
+  projects.value?.forEach((p) => {
+    if (p.category) set.add(p.category)
+  })
   return Array.from(set)
 })
 
@@ -22,8 +24,8 @@ const filtered = computed(() => {
   return projects.value.filter((p) => p.category === activeCategory.value)
 })
 
-const categoryLabel = (c: string) => {
-  if (c === 'all') return 'All'
+const categoryLabel = (c: string | undefined) => {
+  if (!c || c === 'all') return 'All'
   return c.charAt(0).toUpperCase() + c.slice(1)
 }
 </script>

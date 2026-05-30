@@ -294,7 +294,7 @@ const isNum = (v: unknown) => typeof v === 'number'
               :title="h"
               @click="loadHistory(h)"
             >
-              {{ h.split('\n')[0].slice(0, 40) }}…
+              {{ (h.split('\n')[0] ?? '').slice(0, 40) }}…
             </li>
           </ul>
         </div>

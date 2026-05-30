@@ -85,7 +85,7 @@ const levelDots: Record<string, number> = {
                   v-for="n in 4"
                   :key="n"
                   class="w-1.5 h-1.5 rounded-full"
-                  :class="n <= levelDots[s.level] ? 'bg-emerald-500' : 'bg-neutral-300 dark:bg-neutral-700'"
+                  :class="n <= (levelDots[s.level] ?? 0) ? 'bg-emerald-500' : 'bg-neutral-300 dark:bg-neutral-700'"
                 />
                 <span class="ml-1 text-xs text-neutral-500 w-20 text-right">{{ levelLabel[s.level] }}</span>
               </span>
