@@ -37,6 +37,7 @@ const store = useOracleToolkitStore()
         <OraParameterKnowledgeBase v-else-if="store.activeModule === 'params'" />
         <OraSqlPlayground v-else-if="store.activeModule === 'playground'" />
         <OraOracleArchitecture v-else-if="store.activeModule === 'architecture'" />
+        <OraAwrMinerConverter v-else-if="store.activeModule === 'awr'" />
         <OraDashboard v-else />
       </div>
     </main>

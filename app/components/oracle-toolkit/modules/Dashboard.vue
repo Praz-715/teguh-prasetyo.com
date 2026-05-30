@@ -16,6 +16,7 @@ const allModulesByCategory = computed(() => {
   const cats: { label: string, items: ModuleMeta[] }[] = [
     { label: 'Generators', items: MODULES.filter(m => m.category === 'generator') },
     { label: 'Calculators', items: MODULES.filter(m => m.category === 'calculator') },
+    { label: 'Analyze', items: MODULES.filter(m => m.category === 'analyze') },
     { label: 'Helpers', items: MODULES.filter(m => m.category === 'helper') },
     { label: 'Reference', items: MODULES.filter(m => m.category === 'reference') },
     { label: 'Learn', items: MODULES.filter(m => m.category === 'learn') },

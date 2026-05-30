@@ -29,6 +29,7 @@
     "alasql": "^4.17.3",
     "better-sqlite3": "^12.10.0",
     "fuse.js": "^7.3.0",
+    "html2canvas-pro": "^2.0.4",
     "nuxt": "^4.0.0",
     "nuxt-security": "^2.5.1",
     "pinia": "^3.0.4",

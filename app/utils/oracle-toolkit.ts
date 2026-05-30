@@ -2,13 +2,14 @@ export type ModuleId =
   | 'dashboard' | 'rman' | 'datapump' | 'tablespace' | 'archivelog'
   | 'asm' | 'session-kill' | 'tns' | 'sql-format' | 'snippets'
   | 'explain' | 'cron' | 'params' | 'playground' | 'architecture'
+  | 'awr'
 
 export type ModuleMeta = {
   id: ModuleId
   title: string
   description: string
   icon: string
-  category: 'home' | 'generator' | 'calculator' | 'helper' | 'reference' | 'learn'
+  category: 'home' | 'generator' | 'calculator' | 'helper' | 'reference' | 'learn' | 'analyze'
   keywords: string[]
 }
 
@@ -28,6 +29,7 @@ export const MODULES: ModuleMeta[] = [
   { id: 'params', title: 'Parameter Knowledge Base', description: 'Oracle init parameters reference', icon: 'i-lucide-book-open', category: 'reference', keywords: ['parameter', 'init', 'spfile', 'reference'] },
   { id: 'playground', title: 'SQL Learning Playground', description: 'Interactive in-browser SQL practice with mock dataset', icon: 'i-lucide-graduation-cap', category: 'learn', keywords: ['sql', 'learn', 'practice', 'playground', 'join', 'select', 'group', 'tutorial'] },
   { id: 'architecture', title: 'Oracle Architecture', description: 'Interactive visualization of SGA, PGA, processes, storage', icon: 'i-lucide-cpu', category: 'learn', keywords: ['architecture', 'sga', 'pga', 'dbwr', 'lgwr', 'instance', 'memory', 'process', 'storage', 'learn'] },
+  { id: 'awr', title: 'AWR Miner Converter', description: 'Turn awr_miner.sql .out files into trend charts', icon: 'i-lucide-line-chart', category: 'analyze', keywords: ['awr', 'miner', 'chart', 'performance', 'trend', 'aas', 'metrics', 'report', 'out', 'snapshot'] },
 ]
 
 export function moduleMeta(id: ModuleId): ModuleMeta {

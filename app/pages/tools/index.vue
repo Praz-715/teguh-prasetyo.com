@@ -28,9 +28,9 @@ const tools = [
     title: 'Oracle DBA Toolkit',
     subtitle: 'Offline Swiss Army Knife untuk Oracle DBA',
     description:
-      'RMAN/Data Pump generators, tablespace & ASM calculators, snippet manager, explain plan visualizer, parameter KB. Command palette (Ctrl+K), fuzzy search.',
+      'RMAN/Data Pump generators, tablespace & ASM calculators, AWR Miner chart converter, snippet manager, explain plan visualizer, parameter KB. Command palette (Ctrl+K), fuzzy search.',
     icon: 'i-lucide-terminal',
-    tags: ['dba', 'oracle', 'rman', 'sql', 'offline'],
+    tags: ['dba', 'oracle', 'rman', 'awr', 'sql', 'offline'],
   },
 ]
 </script>

@@ -2,12 +2,13 @@
 const store = useOracleToolkitStore()
 
 const groups = computed(() => {
-  const cats: Record<string, ModuleMeta[]> = { home: [], generator: [], calculator: [], helper: [], reference: [], learn: [] }
+  const cats: Record<string, ModuleMeta[]> = { home: [], generator: [], calculator: [], analyze: [], helper: [], reference: [], learn: [] }
   for (const m of MODULES) cats[m.category]?.push(m)
   return [
     { label: '', items: cats.home ?? [] },
     { label: 'Generators', items: cats.generator ?? [] },
     { label: 'Calculators', items: cats.calculator ?? [] },
+    { label: 'Analyze', items: cats.analyze ?? [] },
     { label: 'Helpers', items: cats.helper ?? [] },
     { label: 'Reference', items: cats.reference ?? [] },
     { label: 'Learn', items: cats.learn ?? [] },
