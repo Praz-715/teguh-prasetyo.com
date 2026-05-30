@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const SAMPLE_URL = '/awr-hist-2379549892-DBBPKD-55851-56572.out'
-
 const report = ref<AwrReport | null>(null)
 const parsing = ref(false)
 const error = ref('')
@@ -56,23 +54,6 @@ function onDrop(e: DragEvent) {
   dragOver.value = false
   const f = e.dataTransfer?.files?.[0]
   if (f) readFile(f)
-}
-
-async function loadSample() {
-  parsing.value = true
-  error.value = ''
-  try {
-    const res = await fetch(SAMPLE_URL)
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const text = await res.text()
-    ingest(text, SAMPLE_URL.split('/').pop() ?? 'sample.out')
-  }
-  catch (e) {
-    error.value = `Gagal memuat contoh: ${(e as Error).message}`
-  }
-  finally {
-    parsing.value = false
-  }
 }
 
 function reset() {
@@ -329,17 +310,6 @@ SQL&gt; @awr_miner.sql
         </p>
         <p class="text-xs text-neutral-500 mt-1">Diproses 100% di browser kamu</p>
       </label>
-
-      <div class="mt-3 flex items-center justify-between gap-2">
-        <button
-          class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400"
-          :disabled="parsing"
-          @click="loadSample"
-        >
-          <UIcon name="i-lucide-sparkles" class="w-4 h-4" />
-          Coba dengan file contoh
-        </button>
-      </div>
 
       <p v-if="error" class="mt-3 text-sm text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
         <UIcon name="i-lucide-alert-triangle" class="w-4 h-4 shrink-0" />

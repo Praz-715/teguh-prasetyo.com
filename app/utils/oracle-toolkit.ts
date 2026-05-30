@@ -1,8 +1,9 @@
 export type ModuleId =
-  | 'dashboard' | 'rman' | 'datapump' | 'tablespace' | 'archivelog'
-  | 'asm' | 'session-kill' | 'tns' | 'sql-format' | 'snippets'
-  | 'explain' | 'cron' | 'params' | 'playground' | 'architecture'
-  | 'awr'
+  | 'dashboard' | 'rman' | 'create-any' | 'alter-any' | 'partition'
+  | 'datapump' | 'session-kill' | 'tns'
+  | 'capacity' | 'awr' | 'awr-humanize'
+  | 'sql-format' | 'snippets' | 'explain' | 'params'
+  | 'playground' | 'architecture'
 
 export type ModuleMeta = {
   id: ModuleId
@@ -16,13 +17,13 @@ export type ModuleMeta = {
 export const MODULES: ModuleMeta[] = [
   { id: 'dashboard', title: 'Dashboard', description: 'Overview & quick actions', icon: 'i-lucide-layout-dashboard', category: 'home', keywords: ['home', 'overview'] },
   { id: 'rman', title: 'RMAN Generator', description: 'Backup, restore, validate commands', icon: 'i-lucide-database-backup', category: 'generator', keywords: ['backup', 'rman', 'restore', 'recovery', 'archivelog'] },
+  { id: 'create-any', title: 'Create Any', description: 'CREATE table, user, index, tablespace, view, sequence…', icon: 'i-lucide-square-plus', category: 'generator', keywords: ['create', 'ddl', 'table', 'user', 'index', 'tablespace', 'datafile', 'tempfile', 'bigfile', 'view', 'sequence', 'synonym', 'role', 'directory'] },
+  { id: 'alter-any', title: 'Alter / Manage Any', description: 'ALTER table, user, tablespace, index…', icon: 'i-lucide-square-pen', category: 'generator', keywords: ['alter', 'modify', 'add', 'drop', 'column', 'rename', 'reset password', 'lock', 'unlock', 'datafile', 'resize', 'autoextend', 'rebuild'] },
+  { id: 'partition', title: 'Partition Generator', description: 'CREATE TABLE … PARTITION BY range/list/hash/interval', icon: 'i-lucide-grid-2x2', category: 'generator', keywords: ['partition', 'range', 'list', 'hash', 'interval', 'subpartition', 'composite'] },
   { id: 'datapump', title: 'Data Pump Generator', description: 'expdp/impdp builders', icon: 'i-lucide-package', category: 'generator', keywords: ['expdp', 'impdp', 'export', 'import', 'schema', 'remap'] },
   { id: 'session-kill', title: 'Session Kill Generator', description: 'ALTER SYSTEM KILL SESSION + RAC', icon: 'i-lucide-zap-off', category: 'generator', keywords: ['kill', 'session', 'rac', 'blocking', 'disconnect'] },
   { id: 'tns', title: 'TNS Descriptor Builder', description: 'tnsnames.ora entries', icon: 'i-lucide-network', category: 'generator', keywords: ['tns', 'tnsnames', 'listener', 'connect', 'descriptor'] },
-  { id: 'cron', title: 'Cron Builder', description: 'Visual cron expression composer', icon: 'i-lucide-clock', category: 'generator', keywords: ['cron', 'schedule', 'job'] },
-  { id: 'tablespace', title: 'Tablespace Calculator', description: 'Growth projection & sizing', icon: 'i-lucide-trending-up', category: 'calculator', keywords: ['tablespace', 'growth', 'sizing', 'capacity'] },
-  { id: 'archivelog', title: 'Archive Log Estimator', description: 'FRA & retention storage', icon: 'i-lucide-archive', category: 'calculator', keywords: ['archivelog', 'fra', 'redo', 'retention'] },
-  { id: 'asm', title: 'ASM Capacity Calculator', description: 'Raw vs usable, redundancy', icon: 'i-lucide-hard-drive', category: 'calculator', keywords: ['asm', 'redundancy', 'normal', 'high', 'external', 'disk'] },
+  { id: 'capacity', title: 'Capacity Planner', description: 'Tablespace growth, archive log / FRA, ASM sizing', icon: 'i-lucide-trending-up', category: 'calculator', keywords: ['tablespace', 'growth', 'sizing', 'capacity', 'archivelog', 'fra', 'redo', 'retention', 'asm', 'redundancy', 'disk'] },
   { id: 'sql-format', title: 'SQL Formatter', description: 'Beautify / minify SQL', icon: 'i-lucide-code-2', category: 'helper', keywords: ['format', 'beautify', 'pretty', 'minify', 'sql'] },
   { id: 'snippets', title: 'Snippet Manager', description: 'Save & search SQL snippets', icon: 'i-lucide-bookmark', category: 'helper', keywords: ['snippet', 'sql', 'library', 'tag', 'favorite'] },
   { id: 'explain', title: 'Explain Plan Visualizer', description: 'Tree view + warnings', icon: 'i-lucide-git-branch', category: 'helper', keywords: ['explain', 'plan', 'execution', 'cost', 'fts'] },
@@ -30,6 +31,7 @@ export const MODULES: ModuleMeta[] = [
   { id: 'playground', title: 'SQL Learning Playground', description: 'Interactive in-browser SQL practice with mock dataset', icon: 'i-lucide-graduation-cap', category: 'learn', keywords: ['sql', 'learn', 'practice', 'playground', 'join', 'select', 'group', 'tutorial'] },
   { id: 'architecture', title: 'Oracle Architecture', description: 'Interactive visualization of SGA, PGA, processes, storage', icon: 'i-lucide-cpu', category: 'learn', keywords: ['architecture', 'sga', 'pga', 'dbwr', 'lgwr', 'instance', 'memory', 'process', 'storage', 'learn'] },
   { id: 'awr', title: 'AWR Miner Converter', description: 'Turn awr_miner.sql .out files into trend charts', icon: 'i-lucide-line-chart', category: 'analyze', keywords: ['awr', 'miner', 'chart', 'performance', 'trend', 'aas', 'metrics', 'report', 'out', 'snapshot'] },
+  { id: 'awr-humanize', title: 'AWR Humanize', description: 'Read awrrpt .html/.txt as human-friendly insights', icon: 'i-lucide-heart-pulse', category: 'analyze', keywords: ['awr', 'humanize', 'awrrpt', 'report', 'insight', 'load profile', 'wait', 'efficiency', 'analogy', 'health'] },
 ]
 
 export function moduleMeta(id: ModuleId): ModuleMeta {
@@ -391,29 +393,6 @@ function detectPlanWarning(op: string): PlanNode['warning'] {
   if (upper.includes('NESTED LOOPS')) return 'nl-loop'
   if (upper.includes('INDEX FAST FULL SCAN')) return 'index-ffs'
   return null
-}
-
-export function buildCron(parts: { minute: string, hour: string, dom: string, month: string, dow: string }): string {
-  return `${parts.minute} ${parts.hour} ${parts.dom} ${parts.month} ${parts.dow}`
-}
-
-export function describeCron(expr: string): string {
-  const parts = expr.trim().split(/\s+/)
-  if (parts.length !== 5) return 'Format tidak valid (butuh 5 field)'
-  const [min, hour, dom, mon, dow] = parts
-  const segments: string[] = []
-  if (min === '*' && hour === '*') segments.push('setiap menit')
-  else if (min!.startsWith('*/')) segments.push(`tiap ${min!.slice(2)} menit`)
-  else if (hour === '*') segments.push(`menit ke-${min} setiap jam`)
-  else segments.push(`pukul ${hour!.padStart(2, '0')}:${min!.padStart(2, '0')}`)
-  if (dom !== '*') segments.push(`tanggal ${dom}`)
-  if (mon !== '*') segments.push(`bulan ${mon}`)
-  if (dow !== '*') {
-    const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
-    const idx = Number.parseInt(dow!, 10)
-    segments.push(Number.isFinite(idx) && idx >= 0 && idx <= 6 ? `hari ${days[idx]}` : `hari ${dow}`)
-  }
-  return segments.join(', ')
 }
 
 export function bytesFromGB(gb: number): number {

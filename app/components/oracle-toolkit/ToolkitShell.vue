@@ -24,13 +24,13 @@ const store = useOracleToolkitStore()
       <div class="max-w-7xl mx-auto p-4 sm:p-6">
         <OraDashboard v-if="store.activeModule === 'dashboard'" />
         <OraRmanGenerator v-else-if="store.activeModule === 'rman'" />
+        <OraCreateAnyGenerator v-else-if="store.activeModule === 'create-any'" />
+        <OraAlterAnyGenerator v-else-if="store.activeModule === 'alter-any'" />
+        <OraPartitionGenerator v-else-if="store.activeModule === 'partition'" />
         <OraDataPumpGenerator v-else-if="store.activeModule === 'datapump'" />
         <OraSessionKillGenerator v-else-if="store.activeModule === 'session-kill'" />
         <OraTnsBuilder v-else-if="store.activeModule === 'tns'" />
-        <OraCronBuilder v-else-if="store.activeModule === 'cron'" />
-        <OraTablespaceCalculator v-else-if="store.activeModule === 'tablespace'" />
-        <OraArchiveLogEstimator v-else-if="store.activeModule === 'archivelog'" />
-        <OraAsmCalculator v-else-if="store.activeModule === 'asm'" />
+        <OraCapacityPlanner v-else-if="store.activeModule === 'capacity'" />
         <OraSqlFormatter v-else-if="store.activeModule === 'sql-format'" />
         <OraSnippetManager v-else-if="store.activeModule === 'snippets'" />
         <OraExplainPlanVisualizer v-else-if="store.activeModule === 'explain'" />
@@ -38,6 +38,7 @@ const store = useOracleToolkitStore()
         <OraSqlPlayground v-else-if="store.activeModule === 'playground'" />
         <OraOracleArchitecture v-else-if="store.activeModule === 'architecture'" />
         <OraAwrMinerConverter v-else-if="store.activeModule === 'awr'" />
+        <OraAwrHumanize v-else-if="store.activeModule === 'awr-humanize'" />
         <OraDashboard v-else />
       </div>
     </main>
