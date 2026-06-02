@@ -39,6 +39,18 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
   },
 
+  // Pull dynamic content routes (blog + projects) into the sitemap. Static
+  // pages are auto-discovered. See server/api/__sitemap__/urls.ts.
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+    defaults: { changefreq: 'monthly', priority: 0.5 },
+  },
+
+  // Runtime OG-image generation (nuxt-og-image islands) is incompatible with
+  // this Nuxt 4.x build ("Invalid island request hash"), so we ship a static
+  // branded card instead (public/og/og-default.png, set in app.vue).
+  ogImage: { enabled: false },
+
   app: {
     head: {
       htmlAttrs: { lang: 'en' },

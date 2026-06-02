@@ -10,7 +10,7 @@ author: Teguh Prasetyo
 draft: false
 ---
 
-This site is a clean rewrite of [teguh-prasetyo.com](https://www.teguh-prasetyo.com/). The old version got me a long way, but the dependency stack had drifted into a mix of Bootstrap, custom SCSS, and component libraries that didn't quite agree with each other. Worse, a lot of the content rendered only after JavaScript hydration — bad for search engines and bad for first paint on slow connections.
+This site is a clean rewrite of [teguh-prasetyo.com](/). The old version got me a long way, but the dependency stack had drifted into a mix of Bootstrap, custom SCSS, and component libraries that didn't quite agree with each other. Worse, a lot of the content rendered only after JavaScript hydration — bad for search engines and bad for first paint on slow connections.
 
 ## What changed
 

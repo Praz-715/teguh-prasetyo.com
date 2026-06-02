@@ -20,7 +20,28 @@ useSeoMeta({
   ogTitle: project.value.title,
   ogDescription: project.value.description,
   ogType: 'article',
+  twitterCard: 'summary_large_image',
+  twitterTitle: project.value.title,
+  twitterDescription: project.value.description,
 })
+
+useSchemaOrg([
+  defineArticle({
+    headline: project.value.title,
+    description: project.value.description,
+    ...(project.value.tech?.length ? { keywords: project.value.tech } : {}),
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: 'Home', item: '/' },
+      { name: 'Projects', item: '/projects' },
+      { name: project.value.title },
+    ],
+  }),
+])
+
+// Project covers are small/square brand logos — poor social previews — so we
+// fall back to the site's default branded card (set sitewide in app.vue).
 </script>
 
 <template>

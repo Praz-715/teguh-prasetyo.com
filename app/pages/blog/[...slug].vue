@@ -16,20 +16,42 @@ const { data: surround } = await useAsyncData(`blog-surround-${path.value}`, () 
   queryCollectionItemSurroundings('blog', path.value, { fields: ['title', 'description'] }),
 )
 
+// Prefer the post's own cover as the social card; fall back to the site default.
+const ogImage = post.value.cover || '/og/og-default.png'
+
 useSeoMeta({
   title: post.value.title,
   description: post.value.description,
   ogTitle: post.value.title,
   ogDescription: post.value.description,
-  ogImage: post.value.cover,
+  ogImage,
   ogType: 'article',
   twitterCard: 'summary_large_image',
   twitterTitle: post.value.title,
   twitterDescription: post.value.description,
-  twitterImage: post.value.cover,
+  twitterImage: ogImage,
   articlePublishedTime: post.value.date,
   articleAuthor: post.value.author ? [post.value.author] : undefined,
 })
+
+// Article + breadcrumb structured data. author/publisher auto-link to the
+// site-identity Person registered in app.vue.
+useSchemaOrg([
+  defineArticle({
+    headline: post.value.title,
+    description: post.value.description,
+    datePublished: post.value.date,
+    ...(post.value.cover ? { image: post.value.cover } : {}),
+    ...(post.value.tags?.length ? { keywords: post.value.tags } : {}),
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: 'Home', item: '/' },
+      { name: 'Blog', item: '/blog' },
+      { name: post.value.title },
+    ],
+  }),
+])
 
 const fmt = (d: string) =>
   new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -41,7 +63,7 @@ const readingMinutes = computed(() => {
   return Math.max(1, Math.round(words / 220))
 })
 
-const siteUrl = useSiteConfig().url || 'https://teguh-prasetyo.com'
+const siteUrl = useSiteConfig().url || 'https://www.teguh-prasetyo.com'
 const shareUrl = computed(() => `${siteUrl}${path.value}`)
 
 const { copy, copied } = useClipboard({ source: shareUrl })
