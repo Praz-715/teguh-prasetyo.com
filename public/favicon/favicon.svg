@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="grad-light" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#84cc16"/><stop offset="100%" stop-color="#facc15"/></linearGradient><linearGradient id="grad-dark" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#bef264"/><stop offset="100%" stop-color="#fde047"/></linearGradient></defs><rect class="bg" width="64" height="64" rx="13"/><text class="text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="35" font-family="'Inter', 'SF Pro Display', sans-serif" font-weight="700" letter-spacing="-0.02em" dy="0.087">😎</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Teguh Prasetyo">
+  <rect width="64" height="64" rx="14" fill="#10b981"/>
+  <g fill="none" stroke="#06231a" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="32" cy="20" rx="13.5" ry="5.5"/>
+    <path d="M18.5 20 v23.5 c0 3 6 5.5 13.5 5.5 s13.5 -2.5 13.5 -5.5 v-23.5"/>
+    <path d="M18.5 31.7 c0 3 6 5.5 13.5 5.5 s13.5 -2.5 13.5 -5.5"/>
+  </g>
+</svg>
