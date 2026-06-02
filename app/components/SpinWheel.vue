@@ -292,6 +292,7 @@ onBeforeUnmount(() => {
                 <text
                   :x="textPos(i).x"
                   :y="textPos(i).y"
+                  :transform="`rotate(${-rotation} ${textPos(i).x} ${textPos(i).y})`"
                   text-anchor="middle"
                   dominant-baseline="middle"
                   :font-size="textSize"
