@@ -2,7 +2,9 @@
 const owner = useOwner()
 
 useSeoMeta({
-  title: owner.role,
+  // Concise, keyword-led title — "<title> — Teguh Prasetyo" stays under 60
+  // chars (owner.role is the longer form used in the hero / OG title).
+  title: 'Oracle Database Engineer & Consultant',
   description: owner.intro,
   ogTitle: `${owner.name} — ${owner.role}`,
   ogDescription: owner.intro,

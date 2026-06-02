@@ -60,12 +60,9 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon.ico' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
         { rel: 'manifest', href: '/favicon/site.webmanifest' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
-        },
+        // Fonts (Inter, JetBrains Mono, Newsreader) are self-hosted by
+        // @nuxt/fonts and inlined into the entry CSS — no external, render-
+        // blocking Google Fonts request needed.
       ],
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -184,8 +181,8 @@ export default defineNuxtConfig({
         'base-uri': ['\'self\''],
         'default-src': ['\'self\''],
         'script-src': ['\'self\'', '\'unsafe-inline\'', '\'unsafe-eval\''],
-        'style-src': ['\'self\'', '\'unsafe-inline\'', 'https://fonts.googleapis.com'],
-        'font-src': ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
+        'style-src': ['\'self\'', '\'unsafe-inline\''],
+        'font-src': ['\'self\'', 'data:'],
         'img-src': ['\'self\'', 'data:', 'blob:', 'https://images.unsplash.com'],
         'connect-src': ['\'self\''],
         'object-src': ['\'none\''],

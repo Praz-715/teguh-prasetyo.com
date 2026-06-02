@@ -2,7 +2,12 @@
 const owner = useOwner()
 
 useHead({
-  titleTemplate: (title) => (title ? `${title} — Teguh Prasetyo` : 'Teguh Prasetyo'),
+  // Append the brand only when there's room — keeps long content titles
+  // (e.g. blog posts) under the ~60-char SERP limit instead of truncating.
+  titleTemplate: (title) => {
+    if (!title) return 'Teguh Prasetyo'
+    return title.length > 45 ? title : `${title} — Teguh Prasetyo`
+  },
 })
 
 // Site-wide default social-share image. Pages with their own cover (blog posts)
