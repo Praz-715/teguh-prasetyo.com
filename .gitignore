@@ -83,6 +83,9 @@ out
 *.tmp
 *.temp
 .scratch/
+_console.mjs
 
 # ── Claude Code local config (agent settings, lokal only) ───────────────
 .claude/
+.agents/
+skills-lock.json
