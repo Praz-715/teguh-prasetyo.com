@@ -135,8 +135,7 @@ const aasChart = computed<ChartData>(() => {
 type Preset = { key: string, label: string, unit: string, type: 'line' | 'area', metrics: Array<{ key: string, name: string }> }
 const METRIC_PRESETS: Preset[] = [
   { key: 'cpu', label: 'OS CPU (%)', unit: '%', type: 'line', metrics: [
-    { key: 'os_cpu', name: 'OS CPU avg' },
-    { key: 'os_cpu_max', name: 'OS CPU max' },
+    { key: 'os_cpu', name: 'OS CPU' },
   ] },
   { key: 'aas', label: 'Active Sessions', unit: '', type: 'line', metrics: [
     { key: 'aas', name: 'Avg Active Sessions' },
