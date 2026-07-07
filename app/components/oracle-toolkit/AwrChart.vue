@@ -6,10 +6,13 @@ const props = withDefaults(defineProps<{
   type?: 'line' | 'area'
   height?: number
   unit?: string
+  /** Title drawn on the exported image. Falls back to the enclosing section's <h3>. */
+  title?: string
 }>(), {
   type: 'line',
   height: 300,
   unit: '',
+  title: undefined,
 })
 
 const PALETTE = [
@@ -188,88 +191,141 @@ function fmt(v: number | null | undefined): string {
 }
 
 // --- copy as image ---
+// The export is drawn entirely by us: the chart SVG is serialized (with its
+// computed styles baked in) and painted onto a canvas together with a title
+// and legend. No DOM cloning → immune to the strict production CSP that
+// blocks stylesheets inside html2canvas-style iframe clones.
 const copyState = ref<'idle' | 'busy' | 'done' | 'error'>('idle')
+
+// SVG rendered via <img> can't load webfonts — stick to system fonts.
+const EXPORT_FONT = 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif'
 
 function isDark(): boolean {
   return typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
 }
 
-function decodeSvgDataUri(uri: string): string | null {
-  const comma = uri.indexOf(',')
-  if (comma === -1) return null
-  const meta = uri.slice(0, comma)
-  const data = uri.slice(comma + 1)
-  try {
-    return meta.includes('base64') ? atob(data) : decodeURIComponent(data)
-  }
-  catch {
-    return null
-  }
+// The live SVG is styled with Tailwind classes, which stop resolving once the
+// markup is serialized standalone — bake the computed styles into presentation
+// attributes so the exported image matches what's on screen.
+function bakeSvgStyles(src: SVGSVGElement): SVGSVGElement {
+  const clone = src.cloneNode(true) as SVGSVGElement
+  const PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'font-size', 'font-weight', 'opacity']
+  const srcEls = src.querySelectorAll<SVGElement>('*')
+  const cloneEls = clone.querySelectorAll<SVGElement>('*')
+  srcEls.forEach((el, i) => {
+    const target = cloneEls[i]
+    if (!target) return
+    const cs = getComputedStyle(el)
+    for (const p of PROPS) {
+      const v = cs.getPropertyValue(p)
+      if (v) target.setAttribute(p, v)
+    }
+    target.removeAttribute('class')
+  })
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+  clone.setAttribute('width', String(Math.max(1, Math.round(width.value))))
+  clone.setAttribute('height', String(props.height))
+  clone.setAttribute('font-family', EXPORT_FONT)
+  return clone
 }
 
-// @nuxt/icon renders icons in CSS `mask-image` mode by default: a box filled
-// with `background-color: currentColor`, masked by an SVG shape exposed via a
-// `--svg` CSS variable. html2canvas can't apply masks (it paints just the box
-// → a solid square). We swap each masked icon for a real inline SVG. The mask
-// SVG has its `currentColor` baked to literal `black`, so we recolour it to the
-// icon's intended colour (its `background-color`).
-//
-// This operates purely on html2canvas's clone (which lives in a styled iframe,
-// so getComputedStyle resolves there) — pairing against the live DOM by index
-// is unreliable because the clone's node set can differ.
-function fixIconsInClone(clone: HTMLElement) {
-  const win = clone.ownerDocument?.defaultView ?? window
-  for (const el of clone.querySelectorAll<HTMLElement>('*')) {
-    const cs = win.getComputedStyle(el)
-    let raw = cs.maskImage
-    if (!raw || raw === 'none') raw = cs.webkitMaskImage
-    if (!raw || raw === 'none' || !raw.includes('data:image/svg')) continue
+function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error('SVG rasterization failed'))
+    img.src = url
+  })
+}
 
-    el.style.maskImage = 'none'
-    el.style.webkitMaskImage = 'none'
-    el.style.backgroundColor = 'transparent'
+async function renderChartPng(): Promise<Blob> {
+  const svg = svgRef.value
+  if (!svg) throw new Error('chart not mounted')
+  const dark = isDark()
+  const SCALE = 2
+  const M = 16 // outer margin
+  const chartW = Math.max(1, Math.round(width.value))
+  const chartH = props.height
 
-    // The URI uses single quotes for attributes and literal spaces, so we slice
-    // from `data:` to the closing `")` instead of a quote-sensitive regex.
-    const start = raw.indexOf('data:image/svg')
-    const uri = raw.slice(start).replace(/["')]+\s*$/, '').trim()
-    const svgText = decodeSvgDataUri(uri)
-    if (!svgText) continue
+  const title = (props.title
+    ?? wrap.value?.closest('section')?.querySelector('h3')?.textContent
+    ?? '').replace(/\s+/g, ' ').trim()
+  const titleH = title ? 30 : 0
 
-    const color = cs.backgroundColor && cs.backgroundColor !== 'rgba(0, 0, 0, 0)'
-      ? cs.backgroundColor
-      : cs.color
-    el.innerHTML = svgText.replace(/black/g, color)
-    const inner = el.querySelector('svg')
-    if (inner) {
-      inner.setAttribute('width', '100%')
-      inner.setAttribute('height', '100%')
-      inner.style.display = 'block'
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('canvas unavailable')
+
+  // Legend mirrors the on-screen one: only for multi-series, hidden excluded.
+  ctx.font = `12px ${EXPORT_FONT}`
+  const legend = props.data.series.length > 1
+    ? visibleSeries.value.map(s => ({ name: s.name, color: s.color }))
+    : []
+  const items: Array<{ x: number, row: number, name: string, color: string }> = []
+  let lx = M
+  let row = 0
+  for (const it of legend) {
+    const w = 10 + 6 + ctx.measureText(it.name).width
+    if (lx + w > M + chartW && lx > M) {
+      row++
+      lx = M
     }
+    items.push({ x: lx, row, ...it })
+    lx += w + 16
   }
+  const rowH = 20
+  const legendH = legend.length ? (row + 1) * rowH + 4 : 0
+
+  const outW = chartW + M * 2
+  const outH = M + titleH + chartH + legendH + M
+  canvas.width = outW * SCALE
+  canvas.height = outH * SCALE
+  ctx.scale(SCALE, SCALE)
+
+  ctx.fillStyle = dark ? '#0a0a0a' : '#ffffff'
+  ctx.fillRect(0, 0, outW, outH)
+
+  if (title) {
+    ctx.fillStyle = dark ? '#f5f5f5' : '#171717'
+    ctx.font = `600 14px ${EXPORT_FONT}`
+    ctx.textBaseline = 'middle'
+    ctx.fillText(title, M, M + 8)
+  }
+
+  const xml = new XMLSerializer().serializeToString(bakeSvgStyles(svg))
+  const url = URL.createObjectURL(new Blob([xml], { type: 'image/svg+xml' }))
+  try {
+    const img = await loadImage(url)
+    ctx.drawImage(img, M, M + titleH, chartW, chartH)
+  }
+  finally {
+    URL.revokeObjectURL(url)
+  }
+
+  const legendY = M + titleH + chartH + 4
+  ctx.font = `12px ${EXPORT_FONT}`
+  ctx.textBaseline = 'middle'
+  for (const it of items) {
+    const cy = legendY + it.row * rowH + rowH / 2
+    ctx.fillStyle = it.color
+    ctx.fillRect(it.x, cy - 5, 10, 10)
+    ctx.fillStyle = dark ? '#d4d4d4' : '#525252'
+    ctx.fillText(it.name, it.x + 16, cy)
+  }
+
+  return await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('PNG encode failed'))), 'image/png')
+  })
 }
 
 async function copyImage() {
-  if (copyState.value === 'busy') return
-  // Capture the whole section card (title + chart + legend), not just the chart.
-  const target = (wrap.value?.closest('section') as HTMLElement | null) ?? wrap.value
-  if (!target) return
+  if (copyState.value === 'busy' || props.data.series.length === 0) return
   copyState.value = 'busy'
   try {
     activeIdx.value = null // drop crosshair/tooltip so the snapshot is clean
     await nextTick()
 
-    const { default: html2canvas } = await import('html2canvas-pro')
-    const canvas = await html2canvas(target, {
-      scale: Math.min(2, window.devicePixelRatio || 1) * 1.5,
-      backgroundColor: isDark() ? '#0a0a0a' : '#ffffff',
-      logging: false,
-      ignoreElements: el => (el as HTMLElement).dataset?.copyIgnore === 'true',
-      onclone: (_doc, el) => fixIconsInClone(el),
-    })
-
-    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
-    if (!blob) throw new Error('encode failed')
+    const blob = await renderChartPng()
 
     if (navigator.clipboard && 'write' in navigator.clipboard && typeof ClipboardItem !== 'undefined') {
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
@@ -278,7 +334,7 @@ async function copyImage() {
       // Fallback for browsers without image clipboard support: download.
       const a = document.createElement('a')
       a.href = URL.createObjectURL(blob)
-      a.download = 'awr-section.png'
+      a.download = 'awr-chart.png'
       a.click()
       URL.revokeObjectURL(a.href)
     }
@@ -300,9 +356,8 @@ async function copyImage() {
     <div v-else class="group relative">
       <button
         type="button"
-        data-copy-ignore="true"
         class="absolute top-2 right-2 z-20 inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-white/90 px-2 py-1 text-[11px] font-medium text-neutral-600 shadow-sm backdrop-blur transition-colors hover:border-emerald-500/50 hover:text-emerald-600 dark:border-neutral-700 dark:bg-neutral-900/90 dark:text-neutral-300 dark:hover:text-emerald-400"
-        title="Copy section as image"
+        title="Copy chart as image"
         @pointerenter="onLeave"
         @click="copyImage"
       >

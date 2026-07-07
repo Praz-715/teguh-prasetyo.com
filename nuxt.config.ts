@@ -117,6 +117,14 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: { collections: ['lucide', 'simple-icons'] },
+    // Bundle every statically-referenced icon into the client build so state
+    // changes (copy→check, theme toggle, …) never fetch api.iconify.design at
+    // runtime — CSP blocked those calls in production. The default scan glob
+    // skips .ts files, where many icon names live (utils/oracle-toolkit.ts).
+    clientBundle: {
+      scan: { globInclude: ['**/*.{vue,jsx,tsx,md,mdc,mdx,yml,yaml}', 'app/**/*.ts'] },
+      sizeLimitKb: 512,
+    },
   },
 
   nitro: {
@@ -184,7 +192,9 @@ export default defineNuxtConfig({
         'style-src': ['\'self\'', '\'unsafe-inline\''],
         'font-src': ['\'self\'', 'data:'],
         'img-src': ['\'self\'', 'data:', 'blob:', 'https://images.unsplash.com'],
-        'connect-src': ['\'self\''],
+        // api.iconify.design: safety net for icons the client bundle scan
+        // misses (dynamic names) — only icon names are sent, no user data.
+        'connect-src': ['\'self\'', 'https://api.iconify.design'],
         'object-src': ['\'none\''],
         'form-action': ['\'self\''],
         'frame-ancestors': ['\'self\''],

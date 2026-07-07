@@ -378,7 +378,7 @@ SQL&gt; @awr_miner.sql
             </button>
           </div>
         </div>
-        <OraAwrChart :data="mainChart" type="line" :unit="activePresetMeta.unit" :height="320" />
+        <OraAwrChart :data="mainChart" type="line" :unit="activePresetMeta.unit" :height="320" :title="`Main Metrics — ${activePresetMeta.label}`" />
       </section>
 
       <!-- AAS -->
